@@ -97,7 +97,7 @@ class Record(object):
 
 
 class RecordCollection(object):
-    """A set of excellent Records from a query."""
+    """A set of excellent Records fr om a query."""
     def __init__(self, rows):
         self._rows = rows
         self._all_rows = []
@@ -265,19 +265,22 @@ class Database(object):
         # Setup SQLAlchemy for Database inspection.
         return inspect(self._engine).get_table_names()
 
-    def query(self, query, fetchall=False, **params):
+    def query(self, query, fetchall=False,**params):
         """Executes the given SQL query against the Database. Parameters
         can, optionally, be provided. Returns a RecordCollection, which can be
         iterated over to get result rows as dictionaries.
         """
 
         # Execute the given query.
-        cursor = self.db.execute(text(query), **params) # TODO: PARAMS GO HERE
+        cursor = self.db.execute(text(query), **params) # TODO: PARAMS GO HERE  #cursor changed rows(int)
 
         # Row-by-row Record generator.
         row_gen = (Record(cursor.keys(), row) for row in cursor)
+        # key=cursor.keys()             #every column key <list>['id','title'...]
+        # row_gen = (Record(key, row) for row in cursor)
 
         # Convert psycopg2 results to RecordCollection.
+
         results = RecordCollection(row_gen)
 
         # Fetch all results if desired.
@@ -362,7 +365,8 @@ Notes:
     query = arguments['<query>']
     params = arguments['<params>']
 
-    # Can't send an empty list if params aren't expected.
+
+    #Can't send an empty list if params aren't expected.
     try:
         params = dict([i.split('=') for i in params])
     except ValueError:
@@ -390,7 +394,16 @@ Notes:
 
 # Run the CLI when executed directly.
 if __name__ == '__main__':
-    cli()
+    #cli()
+    DB_CONNECT_STRING = 'mysql+mysqldb://feng:f1234@localhost/blog?charset=utf8'
+    db = Database(DB_CONNECT_STRING)
+    sql='select * from blog_post where id=:id'
+    #sql1='select * from blog_post'
+    params={'id':2}
+    #print(text(sql))
+    #rows=db.query(sql,)
+    rows=db.query(sql,**params)
+    print(rows)
 
 
 

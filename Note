@@ -1,0 +1,33 @@
+    1:The create_engine() function produces an Engine object based on a URL. These URLs follow RFC-1738, and usually
+can include username, password, hostname, database name as well as optional keyword arguments for additional configuration. In some cases a file path is accepted, and in others a “data source name” replaces the “host” and “database” portions. The typical form of a database URL is:
+dialect+driver://username:password@host:port/database
+
+http://docs.sqlalchemy.org/en/latest/core/engines.html
+
+
+    2:about SqlAlchemy.text()
+http://www.pythontip.com/blog/post/8621/
+1. 不同数据库, 可以使用统一的sql参数传递写法. 参数须以:号引出. 在调用execute()的时候, 使用dict结构将实参传进去.
+
+from sqlalchemy import text
+
+result = db.execute(text('select * from table where id < :id and typeName=:type'), {'id': 2,'type':'USER_TABLE'})
+
+
+    3:mysql+mysqldb://feng:f1234@localhost/blog?charset=utf8 写成MySqlDB会报错
+    
+
+    4.sqlalchemy 执行cursor=connect().execute(query,**params)后返回一个类而不是改动行数，列名key=cursor.keys()，
+值value=row for row in cursor
+
+
+    5.两个列表合成一个字典  dict(zip(list1,list2))
+
+    6. row_gen=(Record(cursor.keys(),rows) for rows in cursor)
+        # for i in row_gen:
+        #     print(i.as_dict())
+        #     print('/n')
+        print(next(row_gen).values())
+        row_gen是生成器，通过next（row_gen）可以访问内部元素
+
+    7.__repr__
